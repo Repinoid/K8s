@@ -1,0 +1,27 @@
+# postgres-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service  # Service name referenced in StatefulSet
+  labels:
+    app: backend
+    component: database-service
+spec:
+  selector:
+    app: backend
+    component: database
+  ports:
+  - port: 5432
+    targetPort: 5432
+  clusterIP: None  # Important for StatefulSet DNS resolution
+
+
+
+# kubectl apply -f postgres-statefulset.yaml
+# kubectl apply -f postgres-service.yaml
+# kubectl apply -f go-server-deployment.yaml
+# kubectl apply -f go-server-service.yaml
+# # Optional pgAdmin
+# kubectl apply -f pgadmin-pvc.yaml
+# kubectl apply -f pgadmin-deployment.yaml
+# kubectl apply -f pgadmin-service.yaml

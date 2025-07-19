@@ -1,0 +1,82 @@
+# postgres-statefulset.yaml
+
+# Версия API Kubernetes для управления StatefulSets
+apiVersion: apps/v1
+
+# Тип ресурса Kubernetes
+kind: StatefulSet
+
+# Метаданные StatefulSet
+metadata:
+  # Имя StatefulSet, отличается от имени контейнера Docker
+  name: database-statefulset
+  # Метки для идентификации приложения и компонента
+  labels:
+    app: backend
+    component: database
+    tier: data
+
+# Спецификация StatefulSet
+spec:
+  # Имя сервиса, связанного с этим StatefulSet
+  serviceName: postgres-service
+  # Количество реплик баз данных
+  replicas: 1
+  # Селектор меток для выбора pod'ов
+  selector:
+    matchLabels:
+      app: backend
+      component: database
+  # Шаблон pod'а
+  template:
+    metadata:
+      # Метки pod'а
+      labels:
+        app: backend
+        component: database
+        tier: data
+    spec:
+      # Список контейнеров внутри pod'а
+      containers:
+      - name: postgres-container  # Отличается от имени контейнера Docker
+        # Образ PostgreSQL-контейнера
+        image: postgres:latest
+        # Переменные окружения для настройки базы данных
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "parole"  # Пароль для пользователя базы данных
+        - name: POSTGRES_USER
+          value: "uname"   # Имя пользователя базы данных
+        - name: POSTGRES_DB
+          value: "dbase"   # Название базы данных
+        # Порты контейнера
+        ports:
+        - containerPort: 5432  # Порт PostgreSQL
+          protocol: TCP       # Протокол передачи данных
+        # Проверка работоспособности контейнера
+        livenessProbe:
+          exec:
+            command: ["pg_isready"]  # Команда проверки доступности базы данных
+          initialDelaySeconds: 30     # Задержка перед первой проверкой
+          periodSeconds: 10           # Периодичность проверок
+        # Проверка готовности контейнера
+        readinessProbe:
+          exec:
+            command: ["pg_isready"]  # Команда проверки готовности базы данных
+          initialDelaySeconds: 5      # Задержка перед первой проверкой
+          periodSeconds: 5            # Периодичность проверок
+        # Том для хранения данных базы данных
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data  # Путь монтирования хранилища данных
+
+  # Шаблоны VolumeClaim для динамического выделения PersistentVolume
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      # Режимы доступа к хранилищу
+      accessModes: [ "ReadWriteOnce" ]  # Только один узел может читать и записывать одновременно
+      resources:
+        requests:
+          storage: 1Gi  # Запрашиваемый объем хранилища

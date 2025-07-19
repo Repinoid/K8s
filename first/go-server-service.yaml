@@ -1,0 +1,18 @@
+# go-server-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-service
+  labels:
+    app: backend
+    component: server-service
+spec:
+  type: NodePort  # For Minikube access
+  selector:
+    app: backend
+    component: server
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080  # Accessible on Minikube at this port
+    

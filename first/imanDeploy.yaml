@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iman-dep-name
+  labels:
+    app: iman-dep-label
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: iman
+  template:
+    metadata:
+      labels:
+        app: iman
+    spec:
+      containers:
+      - name: iman-cont
+        image: naeel/iman:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iman-service
+spec:
+  type: NodePort  # This must be explicitly set to NodePort
+  selector:
+    app:  iman  
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30007  
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iman-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: iman.local  # Replace with your domain or use "localhost"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: iman-service
+            port:
+              number: 8080      
