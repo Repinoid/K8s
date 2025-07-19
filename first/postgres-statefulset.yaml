@@ -1,4 +1,4 @@
-# postgres-statefulset.yaml
+# postgres-statefulset.yaml 
 
 # Версия API Kubernetes для управления StatefulSets
 apiVersion: apps/v1
