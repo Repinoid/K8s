@@ -1,0 +1,35 @@
+{{- if .Values.pgadmin.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-pgadmin
+  labels:
+    app: {{ .Release.Name }}-pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-pgadmin
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pgadmin
+    spec:
+      containers:
+      - name: pgadmin
+        image: "{{ .Values.pgadmin.image.repository }}:{{ .Values.pgadmin.image.tag }}"
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: {{ .Values.pgadmin.env.PGADMIN_DEFAULT_EMAIL | quote }}
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: {{ .Values.pgadmin.env.PGADMIN_DEFAULT_PASSWORD | quote }}
+        ports:
+        - containerPort: {{ .Values.pgadmin.service.port }}
+        volumeMounts:
+        - name: pgadmin-data
+          mountPath: /var/lib/pgadmin
+      volumes:
+      - name: pgadmin-data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pgadmin-pvc
+{{- end }}

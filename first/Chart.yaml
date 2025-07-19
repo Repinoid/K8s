@@ -1,0 +1,10 @@
+apiVersion: v2
+name: go-postgres-app
+description: Go server with PostgreSQL and pgAdmin
+version: 0.1.0
+appVersion: "1.0"
+# dependencies:
+# - name: postgresql
+#   version: 12.2.8
+#   repository: https://charts.bitnami.com/bitnami
+#   condition: postgresql.enabled

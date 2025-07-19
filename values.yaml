@@ -1,0 +1,41 @@
+# Go Server
+goServer:
+  image:
+    repository: naeel/iman
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  env:
+    ADDRESS: ":8080"
+    DATABASE_DSN: "host={{ .Release.Name }}-postgresql user={{ .Values.postgresql.auth.username }} password={{ .Values.postgresql.auth.password }} dbname={{ .Values.postgresql.auth.database }} sslmode=disable"
+
+# PostgreSQL (используем Bitnami chart)
+postgresql:
+  enabled: true
+  auth:
+    username: "uname"
+    password: "parole"
+    database: "dbase"
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+# pgAdmin
+pgadmin:
+  enabled: true
+  image:
+    repository: dpage/pgadmin4
+    tag: latest
+  env:
+    PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+    PGADMIN_DEFAULT_PASSWORD: "securepassword"
+  service:
+    type: NodePort
+    port: 80
+  persistence:
+    enabled: true
+    size: 1Gi
