@@ -1,3 +1,6 @@
+global:  
+  releaseName: my-app
+
 # Go Server
 goServer:
   image:
@@ -7,7 +10,7 @@ goServer:
   port: 8080
   env:
     ADDRESS: ":8080"
-    DATABASE_DSN: "host={{ .Release.Name }}-postgresql user={{ .Values.postgresql.auth.username }} password={{ .Values.postgresql.auth.password }} dbname={{ .Values.postgresql.auth.database }} sslmode=disable"
+    DATABASE_DSN: "host=my-app-postgresql user=uname password=parole dbname=dbase sslmode=disable"
 
 # PostgreSQL (используем Bitnami chart)
 postgresql:
@@ -26,6 +29,7 @@ postgresql:
 
 # pgAdmin
 pgadmin:
+  #enabled: false
   enabled: true
   image:
     repository: dpage/pgadmin4

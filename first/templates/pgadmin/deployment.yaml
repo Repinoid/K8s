@@ -32,4 +32,6 @@ spec:
       - name: pgadmin-data
         persistentVolumeClaim:
           claimName: {{ .Release.Name }}-pgadmin-pvc
+
 {{- end }}
+

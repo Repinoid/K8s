@@ -1,0 +1,30 @@
+alias k=kubectl
+
+helm install my-app .
+helm uninstall my-app
+helm upgrade --install my-app . --atomic --timeout 5m0s
+helm template .
+helm install my-app . --debug --dry-run
+
+minikube service server-service --url
+minikube service my-app-go-server --url
+
+
+kubectl logs my-app-go-server-59798f885f-6cj5c 
+kubectl describe pod my-app-go-server-59798f885f-dkwp9 | grep -A10 Events
+kubectl get svc
+kubectl get pods -o wide
+kubectl describe svc server-service
+
+kubectl port-forward service/server-service 8080:8080
+kubectl port-forward pod/my-app-go-server-59798f885f-zmrz7 8080:8080
+
+kubectl get pods -l app=my-app-go-server
+kubectl describe pod -l app=my-app-go-server | grep -A5 DATABASE_DSN
+kubectl describe pod -l app=my-app-go-server | grep -A5 Events
+kubectl delete pvc --all
+kubectl describe pod my-app-go-server-59798f885f-6cj5c  | grep -A10 Events
+kubectl get svc -A -o wide
+kubectl get all --all-namespaces
+
+kubectl exec my-app-go-server-59798f885f-zmrz7 -- netstat -tuln | grep 8080
