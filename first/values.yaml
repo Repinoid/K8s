@@ -10,7 +10,7 @@ goServer:
   port: 8080
   env:
     ADDRESS: ":8080"
-    DATABASE_DSN: "host=my-app-postgresql user=uname password=parole dbname=dbase sslmode=disable"
+    # DATABASE_DSN: "host=my-app-postgresql user=uname password=parole dbname=dbase sslmode=disable"
 
 # PostgreSQL (используем Bitnami chart)
 postgresql:

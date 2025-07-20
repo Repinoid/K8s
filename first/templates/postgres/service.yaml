@@ -16,12 +16,3 @@ spec:
   clusterIP: None  # Important for StatefulSet DNS resolution
 
 
-
-# kubectl apply -f postgres-statefulset.yaml
-# kubectl apply -f postgres-service.yaml
-# kubectl apply -f go-server-deployment.yaml
-# kubectl apply -f go-server-service.yaml
-# # Optional pgAdmin
-# kubectl apply -f pgadmin-pvc.yaml
-# kubectl apply -f pgadmin-deployment.yaml
-# kubectl apply -f pgadmin-service.yaml

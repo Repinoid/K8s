@@ -28,3 +28,14 @@ kubectl get svc -A -o wide
 kubectl get all --all-namespaces
 
 kubectl exec my-app-go-server-59798f885f-zmrz7 -- netstat -tuln | grep 8080
+
+
+
+# kubectl apply -f postgres-statefulset.yaml
+# kubectl apply -f postgres-service.yaml
+# kubectl apply -f go-server-deployment.yaml
+# kubectl apply -f go-server-service.yaml
+# # Optional pgAdmin
+# kubectl apply -f pgadmin-pvc.yaml
+# kubectl apply -f pgadmin-deployment.yaml
+# kubectl apply -f pgadmin-service.yaml

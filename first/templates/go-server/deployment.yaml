@@ -27,8 +27,8 @@ spec:
           value: {{ .Values.goServer.env.ADDRESS | quote }}
         - name: DATABASE_DSN
           # TESSSSST ! 
-          #value: "host={{ .Release.Name }}-postgresql user={{ .Values.postgresql.auth.username }} password={{ .Values.postgresql.auth.password }} dbname={{ .Values.postgresql.auth.database }} sslmode=disable"
-          value: {{ .Values.goServer.env.DATABASE_DSN | quote }}
+          value: "host={{ .Release.Name }}-postgresql user={{ .Values.postgresql.auth.username }} password={{ .Values.postgresql.auth.password }} dbname={{ .Values.postgresql.auth.database }} sslmode=disable"
+          #value: {{ .Values.goServer.env.DATABASE_DSN | quote }}
         livenessProbe:
           httpGet:
             path: /health
