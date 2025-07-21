@@ -1,3 +1,31 @@
+# Исключаем временные файлы и кэш
+*.tfstate*
+*.tfvars.*
+*.terraform/*
+crash.log
+*.tfplan*
+*.tfbackup
+*tf.tfstate.backup
+*.swp
+.DS_Store
+terraform.tfstate.d/
+
+variables.tf
+
+# Локальные переменные
+override.tf
+override.tf.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Каталоги локальных файлов провайдеров
+terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+
+# Логирование ошибок
+crash.log*
+
 # Игнорируем временные файлы и папки
 *.swp
 *~
