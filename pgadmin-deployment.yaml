@@ -1,4 +1,4 @@
-# pgadmin-deployment-simple.yaml
+# pgadmin-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +20,7 @@ spec:
     spec:
       securityContext:
         runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
       containers:
       - name: pgadmin-container
@@ -29,6 +30,10 @@ spec:
           value: "a@e.e"
         - name: PGADMIN_DEFAULT_PASSWORD
           value: "p"
+        - name: PGADMIN_CONFIG_SERVER_MODE
+          value: "False"
+        - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+          value: "False"
         ports:
         - containerPort: 80
           protocol: TCP
@@ -38,4 +43,5 @@ spec:
       volumes:
       - name: pgadmin-data
         emptyDir: {}
-        
+      dnsPolicy: "ClusterFirst"  # Используем DNS кластера
+      
