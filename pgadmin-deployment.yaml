@@ -1,0 +1,39 @@
+# pgadmin-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin-deployment
+  labels:
+    app: admin
+    component: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admin
+      component: pgadmin
+  template:
+    metadata:
+      labels:
+        app: admin
+        component: pgadmin
+    spec:
+      containers:
+      - name: pgadmin-container
+        image: dpage/pgadmin4:latest
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: "a@e.e"
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: "p"
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: pgadmin-storage
+          mountPath: /var/lib/pgadmin
+      volumes:
+      - name: pgadmin-storage
+        persistentVolumeClaim:
+          claimName: pgadmin-pvc
+          
