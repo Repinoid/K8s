@@ -1,4 +1,4 @@
-# pgadmin-deployment.yaml
+# pgadmin-deployment-simple.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,6 +18,9 @@ spec:
         app: admin
         component: pgadmin
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
       - name: pgadmin-container
         image: dpage/pgadmin4:latest
@@ -30,10 +33,9 @@ spec:
         - containerPort: 80
           protocol: TCP
         volumeMounts:
-        - name: pgadmin-storage
+        - name: pgadmin-data
           mountPath: /var/lib/pgadmin
       volumes:
-      - name: pgadmin-storage
-        persistentVolumeClaim:
-          claimName: pgadmin-pvc
-          
+      - name: pgadmin-data
+        emptyDir: {}
+        
