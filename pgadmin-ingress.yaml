@@ -5,11 +5,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: pga.5.172.178.182.nip.io
+    http:
       paths:
       - path: /
         pathType: Prefix
