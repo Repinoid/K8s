@@ -7,5 +7,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: local-path      
+      storage: 100Mi  # 100 МБ
+  storageClassName: local-path
+  

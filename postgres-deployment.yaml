@@ -19,33 +19,22 @@ spec:
         - containerPort: 5432
         env:
         - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_DB
+          value: "mydatabase"
         - name: POSTGRES_USER
-          valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_USER
+          value: "postgres"
         - name: POSTGRES_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: postgres-config
-              key: POSTGRES_PASSWORD
+          value: "password"
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"  # Добавляем поддиректорию
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data
-        - name: postgres-config
-          mountPath: /etc/postgresql
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:
           claimName: postgres-pvc
-      - name: postgres-config
-        configMap:
-          name: postgres-config
-          items:
-          - key: postgresql.conf
-            path: postgresql.conf
-            
+          
