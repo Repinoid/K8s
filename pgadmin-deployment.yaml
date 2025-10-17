@@ -1,3 +1,5 @@
+# pgadmin-deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +21,12 @@ spec:
         - containerPort: 80
         env:
         - name: PGADMIN_DEFAULT_EMAIL
-          value: "admin@example.com"
+          valueFrom:
+            configMapKeyRef:
+              name: pgadmin-config
+              key: PGADMIN_DEFAULT_EMAIL
         - name: PGADMIN_DEFAULT_PASSWORD
-          value: "admin"
+          valueFrom:
+            configMapKeyRef:
+              name: pgadmin-config
+              key: PGADMIN_DEFAULT_PASSWORD

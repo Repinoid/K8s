@@ -1,0 +1,10 @@
+# pgadmin-config.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+data:
+  PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+  PGADMIN_DEFAULT_PASSWORD: "admin"
+  
