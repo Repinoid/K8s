@@ -1,2 +1,6 @@
 .env
 setup-kubectl.sh
+kubernetesAdminConfigB64.json
+
+# Используем jq для извлечения и декодирования
+# cat kubernetesAdminConfigB64.json | jq -r '.kubernetesAdminConfigB64' | base64 -d > ~/.kube/config
