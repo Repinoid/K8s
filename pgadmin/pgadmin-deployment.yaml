@@ -30,3 +30,4 @@ spec:
             configMapKeyRef:
               name: pgadmin-config
               key: PGADMIN_DEFAULT_PASSWORD
+              
