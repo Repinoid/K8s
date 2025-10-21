@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 1Gi  # Укажите тот же размер, что и в PVC
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/data"  # Важно: убедитесь, что эта папка доступна и свободна на узле
+  storageClassName: local-path

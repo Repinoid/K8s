@@ -9,7 +9,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.pvc-storage-size }}
-  storageClassName: local-path
-
-  
+      storage: {{ .Values.pvc_storage_size }}
+  storageClassName: {{ .Values.storage_class_name }}

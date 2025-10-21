@@ -1,16 +1,18 @@
 # metastore-pg/values.yaml
 
 containers:
-  name: postgres_container
-  image: postgres:17
+  name: postgres-container
+  image: postgres:alpine
   containerPort: 5432
   environment:
-    POSTGRES_DB: "mydatabase"
+    POSTGRES_DB: "metastoreDB"
     POSTGRES_USER: "postgres"
     POSTGRES_PASSWORD: "password"
     PGDATA: "/var/lib/postgresql/data/pgdata"  # Добавляем поддиректорию
   volumeMounts:
     name: postgres-storage
 claimName: postgres-pvc
-pvc-storage-size: 100Mi
+pvc_storage_size: 1Gi
 effective_cache_size: 1GB
+
+storage_class_name: local-path
