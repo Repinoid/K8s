@@ -14,14 +14,14 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:17
+        image: postgres:alpine    # а чё
         ports:
         - containerPort: 5432
         env:
         - name: POSTGRES_DB
-          value: "mydatabase"
+          value: "metadb"
         - name: POSTGRES_USER
-          value: "postgres"
+          value: "user"
         - name: POSTGRES_PASSWORD
           value: "password"
         - name: PGDATA

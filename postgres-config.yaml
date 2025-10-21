@@ -4,8 +4,8 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  POSTGRES_DB: "mydatabase"
-  POSTGRES_USER: "postgres"
+  POSTGRES_DB: "metadb"
+  POSTGRES_USER: "user"
   POSTGRES_PASSWORD: "password"
   postgresql.conf: |
     listen_addresses = '*'
