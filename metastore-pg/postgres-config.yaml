@@ -12,3 +12,5 @@ data:
     max_connections = 100
     shared_buffers = 256MB
     effective_cache_size = 1GB
+
+    # psql -U user -d metadb
