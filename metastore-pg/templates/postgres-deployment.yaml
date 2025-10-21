@@ -32,9 +32,13 @@ spec:
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD  
           valueFrom:    
-            secretKeyRef:      
-              name: postgres-secret      
-              key: password
+            configMapKeyRef:      
+              name: postgres-config      
+              key: POSTGRES_PASSWORD
+
+            # secretKeyRef:      
+            #   name: postgres-secret      
+            #   key: password
         - name: PGDATA  
           value: "/var/lib/postgresql/data/pgdata"
 
