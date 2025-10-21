@@ -1,0 +1,50 @@
+# metastore-pg/templates/postgres-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metastore-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: {{ .Values.containers.name }}
+        image: {{ .Values.containers.image }}   
+        ports:
+        - containerPort: {{ .Values.containers.containerPort }}
+        env:
+        - name: POSTGRES_DB  
+          valueFrom:    configMapKeyRef:      
+            name: postgres-config      
+            key: POSTGRES_DB
+        - name: POSTGRES_USER  
+          valueFrom:    configMapKeyRef:      
+            name: postgres-config      
+            key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD  
+          valueFrom:    secretKeyRef:      
+            name: postgres-secret      
+            key: password
+        - name: PGDATA  
+          value: "/var/lib/postgresql/data/pgdata"
+
+       
+        volumeMounts:
+        - name: {{ .Values.containers.volumeMounts.name }}
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+      volumes:
+      - name: {{ .Values.containers.volumeMounts.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.claimName }}
+          

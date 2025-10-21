@@ -1,0 +1,16 @@
+# postgres-config.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  POSTGRES_DB: {{ .Values.containers.environment.POSTGRES_DB }}
+  POSTGRES_USER: {{ .Values.containers.environment.POSTGRES_USER }}
+  POSTGRES_PASSWORD: {{ .Values.containers.environment.POSTGRES_PASSWORD }}
+  effective_cache_size: "{{ .Values.effective_cache_size }}"
+  postgresql.conf: |
+    listen_addresses = '*'
+    max_connections = 100
+    shared_buffers = 256MB
+   

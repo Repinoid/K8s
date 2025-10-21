@@ -1,0 +1,16 @@
+# metastore-pg/values.yaml
+
+containers:
+  name: postgres_container
+  image: postgres:17
+  containerPort: 5432
+  environment:
+    POSTGRES_DB: "mydatabase"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "password"
+    PGDATA: "/var/lib/postgresql/data/pgdata"  # Добавляем поддиректорию
+  volumeMounts:
+    name: postgres-storage
+claimName: postgres-pvc
+pvc-storage-size: 100Mi
+effective_cache_size: 1GB

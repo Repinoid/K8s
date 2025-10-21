@@ -1,12 +1,15 @@
+# metastore-pg/templates/postgres-pvc.yaml
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
+  name: {{ .Values.claimName }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi  # 100 МБ
+      storage: {{ .Values.pvc-storage-size }}
   storageClassName: local-path
+
   
