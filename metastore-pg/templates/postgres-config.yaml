@@ -5,7 +5,7 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  POSTGRES_DB: {{ .Values.containers.environment.POSTGRES_DB }}
+  POSTGRES_DB: {{ .Values.containers.environment.POSTGRES_DB }}   # имя базы данных
   POSTGRES_USER: {{ .Values.containers.environment.POSTGRES_USER }}
   POSTGRES_PASSWORD: {{ .Values.containers.environment.POSTGRES_PASSWORD }}
   effective_cache_size: "{{ .Values.effective_cache_size }}"

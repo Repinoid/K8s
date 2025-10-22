@@ -1,1 +1,1 @@
-kubectl exec -it metastore-db-dcb767877-q57df -- psql -U postgres -d metastoreDB
+kubectl exec -it metastore-db-5df5579f79-jvqp6 -- psql -U pgadmin -d metastoreDB

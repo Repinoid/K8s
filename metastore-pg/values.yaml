@@ -5,8 +5,8 @@ containers:
   image: postgres:16
   containerPort: 5432
   environment:
-    POSTGRES_DB: "metastoreDB"
-    POSTGRES_USER: "postgres"
+    POSTGRES_DB: "metastoreDB"  # имя базы данных
+    POSTGRES_USER: "pgadmin"
     POSTGRES_PASSWORD: "password"
     PGDATA: "/var/lib/postgresql/data/pgdata"  # Добавляем поддиректорию
   volumeMounts:
