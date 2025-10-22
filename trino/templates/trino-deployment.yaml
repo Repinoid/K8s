@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trin
+  labels:
+    app: trin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trin
+  template:
+    metadata:
+      labels:
+        app: trin
+    spec:
+      containers:
+      - name: trin
+        image: trino:latest
+        env:
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: MDB_USER  
+          valueFrom:    
+            configMapKeyRef:      
+              name: trino-config      
+              key: MDB_USER
+
+
+        volumeMounts:
+        - name: etc-config-volume
+          mountPath: /etc/trino
+        - name: catalog-config-volume
+          mountPath: /etc/trino/catalog
+      volumes:
+      - name: etc-config-volume
+        configMap:
+          name: etc-config
+      - name: catalog-config-volume
+        configMap:
+          name: catalog-config

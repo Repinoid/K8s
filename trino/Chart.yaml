@@ -1,0 +1,5 @@
+apiVersion: v2
+name: trino
+description: A Helm chart trino
+version: 0.1.0
+appVersion: "1.0"
