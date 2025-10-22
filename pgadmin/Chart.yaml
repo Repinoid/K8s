@@ -1,0 +1,18 @@
+apiVersion: v2
+name: pdadmin
+version: 0.1.0
+description: Простой Helm-чарт для приложения pdadmin
+type: application
+appVersion: 1.0.0
+maintainer: Имя_разработчика <email@example.com>
+home: https://example.com/pdadmin
+icon: https://karta.website.yandexcloud.net/favicon.ico
+sources:
+  - https://github.com/user/repo/tree/main/charts/pdadmin
+keywords:
+  - pdadmin
+  - admin
+engine: gotpl
+dependencies: []
+annotations:
+  artifacthub.io/package-repository: stable

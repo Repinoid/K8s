@@ -41,17 +41,17 @@ spec:
         volumeMounts:
         - name: {{ .Values.containers.volumeMounts.name }}
           mountPath: /var/lib/postgresql/data
-        - name: entrypoint-scripts
+        - name: tables-creation                   # имя для volumes:
           mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
             memory: "1Gi"
             cpu: "500m"
-            
+
       volumes:
       - name: {{ .Values.containers.volumeMounts.name }}
         persistentVolumeClaim:
           claimName: {{ .Values.claimName }}
-      - name: entrypoint-scripts
+      - name: tables-creation
         configMap:
-          name: tables-scripts
+          name: tables-creation-scripts # metadata: name: tables-creation-scripts at metastore-pg/templates/tables.yaml
