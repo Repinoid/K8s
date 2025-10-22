@@ -1,14 +1,15 @@
+# trino/templates/configmap-catalog.yaml
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: catalog-config
 data:
   s3.properties: |    # s3 будет именем каталога в трино
-      # Basic Connector Configuration
     connector.name          =   iceberg
     iceberg.catalog.type    =   jdbc
 
-      # JDBC Catalog Configuration (используем ваш контейнер metastore-service)
+    # JDBC Catalog Configuration (используем ваш контейнер metastore-service)
     iceberg.jdbc-catalog.driver-class           =   org.postgresql.Driver
     iceberg.jdbc-catalog.connection-url         =   jdbc:postgresql://metastore-service:5432/metastore
     iceberg.jdbc-catalog.catalog-name           =   s3-catalog
@@ -16,14 +17,14 @@ data:
     iceberg.jdbc-catalog.connection-user        =   ${ENV:MDB_USER}
     iceberg.jdbc-catalog.connection-password    =   ${ENV:MDB_PASSWORD}
 
-      # Указываем корневой путь к данным в вашем бакете Cloud Storage
+    # Указываем корневой путь к данным в вашем бакете Cloud Storage
     iceberg.jdbc-catalog.default-warehouse-dir  =   s3://ycstrino
 
-      # File System Configuration
+    # File System Configuration
     fs.hadoop.enabled=false
     fs.native-s3.enabled=true
 
-      # Yandex Cloud Storage Configuration
+    # Yandex Cloud Storage Configuration
     s3.aws-access-key   =   ${ENV:YS3_ACCESS_KEY}
     s3.aws-secret-key   =   ${ENV:YS3_SECRET_KEY}
     s3.region           =   ${ENV:YS3_REGION}
