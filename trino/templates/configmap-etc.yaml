@@ -1,3 +1,5 @@
+# trino/templates/configmap-etc.yaml
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,7 +11,7 @@ data:
     node-scheduler.include-coordinator=true
     http-server.http.port=8080
     discovery.uri=http://localhost:8080
-    server.port=8080
+    # server.port=8080
 
   jvm.config: |
     -server

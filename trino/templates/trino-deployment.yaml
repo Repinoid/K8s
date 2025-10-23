@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: trin
-        image: trino:latest
+        image: trinodb/trino:latest
         env:
         - name: TZ
           value: "Europe/Moscow"
