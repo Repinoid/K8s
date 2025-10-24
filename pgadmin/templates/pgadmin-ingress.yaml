@@ -12,10 +12,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - pga.5.172.178.182.nip.io
+    - k8c.ru
     secretName: pgadmin-tls-secret
   rules:
-  - host: pga.5.172.178.182.nip.io
+  - host: k8c.ru
     http:
       paths:
       - path: /

@@ -1,16 +1,16 @@
 apiVersion: v2
-name: pdadmin
+name: pgadmin
 version: 0.1.0
-description: Простой Helm-чарт для приложения pdadmin
+description: Простой Helm-чарт для приложения pgadmin
 type: application
 appVersion: 1.0.0
 maintainer: Имя_разработчика <email@example.com>
-home: https://example.com/pdadmin
+home: https://example.com/pgadmin
 icon: https://karta.website.yandexcloud.net/favicon.ico
 sources:
-  - https://github.com/user/repo/tree/main/charts/pdadmin
+  - https://github.com/user/repo/tree/main/charts/pgadmin
 keywords:
-  - pdadmin
+  - pgadmin
   - admin
 engine: gotpl
 dependencies: []
