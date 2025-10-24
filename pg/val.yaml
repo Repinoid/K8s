@@ -1,46 +1,46 @@
-# val.yaml - Bitnami PostgreSQL с inline скриптами инициализации таблиц
+# val.yaml - Все кастомные настройки для Bitnami PostgreSQL
 
 ## Global parameters
 global:
   storageClass: ""
+  security:
+    allowInsecureImages: true
 
 ## Image settings
 image:
-  registry: docker.io
-  repository: bitnami/postgresql
-  tag: "15"
+  registry:   docker.io
+  repository: bitnamilegacy/postgresql  # Изменено на legacy репозиторий
+  tag:        "17.6.0-debian-12-r4"           # Конкретный стабильный тег
   pullPolicy: IfNotPresent
 
 ## Authentication
 auth:
+  database: "mdb"
+  username: "muser" 
+  password: "mpass"
   enablePostgresUser: true
-  database: "mdb"           # База данных для Iceberg
-  username: "muser"         # Пользователь для метастора
-  password: "mpass"     # Пароль
 
 ## PostgreSQL configuration
 primary:
   name: primary
   
-  # Конфигурация PostgreSQL
+  # Конфигурация PostgreSQL (кастомные настройки)
   configuration: |
     listen_addresses = '*'
     max_connections = 100
     shared_buffers = 256MB
+    effective_cache_size = 1GB
   
-  extendedConfiguration: |
-    effective_cache_size = {{ .Values.effective_cache_size }}
-  
-  # Persistence
+  # Persistence (кастомные настройки)
   persistence:
     enabled: true
-    storageClass: "{{ .Values.storageClass }}"
-    size: "{{ .Values.persistence.size }}"
+    storageClass: "standard"
+    size: "10Gi"
     accessModes:
       - ReadWriteOnce
-    mountPath: /var/lib/postgresql/data
+    mountPath: "/var/lib/postgresql/data"
   
-  # ⭐⭐ СКРИПТЫ ИНИЦИАЛИЗАЦИИ ТАБЛИЦ ⭐⭐
+  # ⭐⭐ КАСТОМНЫЕ СКРИПТЫ ИНИЦИАЛИЗАЦИИ ТАБЛИЦ ⭐⭐
   initdb:
     scripts:
       01-init-iceberg-tables.sql: |
@@ -84,7 +84,7 @@ primary:
     enabled: true
     fsGroup: 1001
   
-  # Ресурсы
+  # Ресурсы (кастомные настройки)
   resources:
     requests:
       memory: "1Gi"
@@ -93,10 +93,10 @@ primary:
       memory: "2Gi"
       cpu: "1000m"
   
-  # Дополнительные переменные окружения (убрали дублирование)
-  extraEnvVars:
-    - name: PGDATA
-      value: "/var/lib/postgresql/data/pgdata"
+  # Дополнительные переменные окружения
+  # extraEnvVars:
+  #   - name: PGDATA
+  #     value: "/var/lib/postgresql/data/pgdata"
 
 ## Architecture
 architecture: standalone
@@ -111,10 +111,6 @@ readReplicas:
 
 ## Volume permissions
 volumePermissions:
-  enabled: false
+  enabled: true
 
-## Параметры для подстановки в шаблоны
-effective_cache_size: "1GB"
-storageClass: "standard"
-persistence:
-  size: "2Gi"
+postgresqlDataDir: /var/lib/postgresql/data
