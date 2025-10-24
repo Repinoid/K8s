@@ -1,0 +1,120 @@
+# val.yaml - Bitnami PostgreSQL с inline скриптами инициализации таблиц
+
+## Global parameters
+global:
+  storageClass: ""
+
+## Image settings
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: "15"
+  pullPolicy: IfNotPresent
+
+## Authentication
+auth:
+  enablePostgresUser: true
+  database: "mdb"           # База данных для Iceberg
+  username: "muser"         # Пользователь для метастора
+  password: "mpass"     # Пароль
+
+## PostgreSQL configuration
+primary:
+  name: primary
+  
+  # Конфигурация PostgreSQL
+  configuration: |
+    listen_addresses = '*'
+    max_connections = 100
+    shared_buffers = 256MB
+  
+  extendedConfiguration: |
+    effective_cache_size = {{ .Values.effective_cache_size }}
+  
+  # Persistence
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.storageClass }}"
+    size: "{{ .Values.persistence.size }}"
+    accessModes:
+      - ReadWriteOnce
+    mountPath: /var/lib/postgresql/data
+  
+  # ⭐⭐ СКРИПТЫ ИНИЦИАЛИЗАЦИИ ТАБЛИЦ ⭐⭐
+  initdb:
+    scripts:
+      01-init-iceberg-tables.sql: |
+        -- Создание таблицы для свойств namespace Iceberg
+        CREATE TABLE IF NOT EXISTS iceberg_namespace_properties (
+          catalog_name VARCHAR(255) NOT NULL,
+          namespace VARCHAR(255) NOT NULL,
+          property_key VARCHAR(5500),
+          property_value VARCHAR(5500),
+          PRIMARY KEY (catalog_name, namespace, property_key)
+        );
+        
+        -- Создание таблицы для метаданных таблиц Iceberg
+        CREATE TABLE IF NOT EXISTS iceberg_tables (
+          catalog_name VARCHAR(255) NOT NULL,
+          table_namespace VARCHAR(255) NOT NULL,
+          table_name VARCHAR(255) NOT NULL,
+          metadata_location VARCHAR(5500),
+          previous_metadata_location VARCHAR(5500),
+          PRIMARY KEY (catalog_name, table_namespace, table_name)
+        );
+        
+        -- Создание индексов для улучшения производительности
+        CREATE INDEX IF NOT EXISTS idx_iceberg_tables_metadata_location 
+        ON iceberg_tables(metadata_location);
+        
+        CREATE INDEX IF NOT EXISTS idx_iceberg_namespace_properties_value 
+        ON iceberg_namespace_properties(property_value);
+        
+        -- Комментарии к таблицам
+        COMMENT ON TABLE iceberg_namespace_properties IS 'Хранилище свойств namespace для Apache Iceberg';
+        COMMENT ON TABLE iceberg_tables IS 'Хранилище метаданных таблиц Apache Iceberg';
+  
+  # Security context
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    runAsNonRoot: true
+  
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  
+  # Ресурсы
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  
+  # Дополнительные переменные окружения (убрали дублирование)
+  extraEnvVars:
+    - name: PGDATA
+      value: "/var/lib/postgresql/data/pgdata"
+
+## Architecture
+architecture: standalone
+
+## Service account
+serviceAccount:
+  create: true
+
+## Read replicas
+readReplicas:
+  replicaCount: 0
+
+## Volume permissions
+volumePermissions:
+  enabled: false
+
+## Параметры для подстановки в шаблоны
+effective_cache_size: "1GB"
+storageClass: "standard"
+persistence:
+  size: "2Gi"

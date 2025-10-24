@@ -1,0 +1,16 @@
+# custom-values.yaml
+auth:
+  database: "pdb"      # POSTGRES_DB
+  username: "user"           # POSTGRES_USER  
+  password: "pass"           # POSTGRES_PASSWORD
+
+primary:
+  persistence:
+    storageClass: "standard"          # Ваш storage class
+    size: "2Gi"                      # Размер тома
+
+effective_cache_size: "1GB"           # Настройка из вашего ConfigMap
+
+# Дополнительные настройки если нужны
+image:
+  tag: "15"
