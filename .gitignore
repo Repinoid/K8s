@@ -1,6 +1,7 @@
 .env
 setup-kubectl.sh
 kubernetesAdminConfigB64.json
+decoded_config.yaml
 
 secrets.yaml
 

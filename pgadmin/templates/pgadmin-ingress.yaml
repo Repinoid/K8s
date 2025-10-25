@@ -5,17 +5,17 @@ kind: Ingress
 metadata:
   name: pgadmin-ingress
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - k8c.ru
+    - pga.5.172.178.182.nip.io
     secretName: pgadmin-tls-secret
   rules:
-  - host: k8c.ru
+  - host: pga.5.172.178.182.nip.io
     http:
       paths:
       - path: /
