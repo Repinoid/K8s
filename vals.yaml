@@ -78,10 +78,14 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"  # принудительная переадресация на HTTPS
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # принудительная переадресация на HTTPS
     cert-manager.io/cluster-issuer: "letsencrypt-prod"  # имя cluster issuer для выдачи сертификатов (Let’s Encrypt)
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-Port $server_port;
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"    
 
   hosts:
     - host: trino.k8c.ru  # домен, на котором будет доступен Trino
-    # - host: trino.example.com  # домен, на котором будет доступен Trino
       paths:
       - path: /
         pathType: Prefix  # тип пути (может быть Exact, Prefix или ImplementationSpecific)
