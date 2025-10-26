@@ -5,3 +5,5 @@ helm pull bitnami/postgresql --untar
 helm install mdb bitnami/postgresql --values val.yaml
 
 trino.default.svc.cluster.local
+
+PO=$(kubectl get pods | grep 'trino-coordinator' | awk '{print $1}') && ke "$PO" -- trino

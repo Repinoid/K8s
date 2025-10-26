@@ -1,0 +1,100 @@
+# securitate.yaml
+
+coordinator:
+  extraVolumes:
+    - name: access-control
+      configMap:
+        name: trino-access-control
+  extraVolumeMounts:
+    - name: access-control
+      mountPath: /etc/trino/access-control
+
+worker:
+  extraVolumes:
+    - name: access-control
+      configMap:
+        name: trino-access-control
+  extraVolumeMounts:
+    - name: access-control
+      mountPath: /etc/trino/access-control
+
+accessControl:
+  type: configmap
+  refreshPeriod: 60s
+  configFile: "rules.json"
+  rules:
+    rules.json: |-
+      {
+        "catalogs": [
+          {
+            "user": "trino",
+            "catalog": ".*",
+            "allow": "all"
+          },
+          {
+            "group": "finance|human_resources",
+            "catalog": "postgres",
+            "allow": true
+          },
+          {
+            "catalog": "hive",
+            "allow": "all"
+          },
+          {
+            "user": "yandex",
+            "catalog": "postgresql",
+            "allow": "read-only"
+          },
+          {
+            "catalog": "system",
+            "allow": "none"
+          }
+        ],
+        "schemas": [
+          {
+            "user": "admin",
+            "schema": ".*",
+            "owner": true
+          },
+          {
+            "user": "guest",
+            "owner": false
+          },
+          {
+            "catalog": "default",
+            "schema": "default",
+            "owner": true
+          }
+        ]
+      }
+
+
+ingress:
+  enabled: true  # включаем Ingress
+  className: nginx  # указываем класс контроллера Ingress (например, Nginx)
+  annotations:
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header X-Forwarded-For "";
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # принудительная переадресация на HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  # принудительная переадресация на HTTPS
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # имя cluster issuer для выдачи сертификатов (Let’s Encrypt)
+
+  hosts:
+    - host: www.k8c.ru  # домен, на котором будет доступен Trino
+    # - host: trino.example.com  # домен, на котором будет доступен Trino
+      paths:
+      - path: /trino/
+        pathType: Prefix  # тип пути (может быть Exact, Prefix или ImplementationSpecific)
+        backend:
+          service:
+            name: trino
+            port:
+              number: 8080   
+  tls:
+    - secretName: trino-tls-secret  # имя секрета с сертификатом (создается отдельно)
+      hosts:
+      - www.k8c.ru  # домен, для которого выдается сертификат
+
+additionalConfigProperties:
+  - http-server.process-forwarded=true  
+
