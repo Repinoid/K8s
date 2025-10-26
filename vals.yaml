@@ -80,10 +80,10 @@ ingress:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"  # имя cluster issuer для выдачи сертификатов (Let’s Encrypt)
 
   hosts:
-    - host: www.k8c.ru  # домен, на котором будет доступен Trino
+    - host: trino.k8c.ru  # домен, на котором будет доступен Trino
     # - host: trino.example.com  # домен, на котором будет доступен Trino
       paths:
-      - path: /trino/
+      - path: /
         pathType: Prefix  # тип пути (может быть Exact, Prefix или ImplementationSpecific)
         backend:
           service:
@@ -93,7 +93,7 @@ ingress:
   tls:
     - secretName: trino-tls-secret  # имя секрета с сертификатом (создается отдельно)
       hosts:
-      - www.k8c.ru  # домен, для которого выдается сертификат
+      - trino.k8c.ru  # домен, для которого выдается сертификат
 
 additionalConfigProperties:
   - http-server.process-forwarded=true  
