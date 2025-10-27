@@ -79,7 +79,7 @@ accessControl:
           },
           {
             "user": "yandex",
-            "catalog": "postgresql",
+            "catalog": "tpch",
             "allow": "read-only"
           },
           {
