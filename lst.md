@@ -1,9 +1,10 @@
 kubectl exec -it metastore-db-5df5579f79-jvqp6 -- psql -U pgadmin -d metastoreDB
 
-helm pull bitnami/postgresql --untar
-
-helm install mdb bitnami/postgresql --values val.yaml
 
 trino.default.svc.cluster.local
 
 PO=$(kubectl get pods | grep 'trino-coordinator' | awk '{print $1}') && ke "$PO" -- trino
+
+kubectl create secret generic trino-certs --from-file=cert.pem
+
+uI3PwzmwWZioj0GD77PQQJg7ybxkrRAoS4e08fBq

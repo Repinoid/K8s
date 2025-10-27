@@ -1,15 +1,52 @@
-# securitate.yaml
+# vals.yaml
+
+server:
+  workers: 1
+  node:
+    environment: production
+    dataDir: /data/trino
+    pluginDir: /usr/lib/trino/plugin
+  log:
+    trino:
+      level: INFO
+  config:
+    path: /etc/trino
+    https:
+      enabled: true   # Включаем HTTPS
+      port: 8443     # Используем стандартный порт для HTTPS
+      keystore:
+        path: "/opt/trino/cert.pem"  # Путь к сертификату в формате PEM
+    authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
+    query:
+      maxMemory: "4GB"
+  exchangeManager: {}
+
 
 coordinator:
+  secretMounts:
+    - name: trino-certs
+      secretName: trino-certs
+      path: /opt/trino/cert.pem
+      subPath: cert.pem
+
   extraVolumes:
     - name: access-control
       configMap:
         name: trino-access-control
+
   extraVolumeMounts:
     - name: access-control
       mountPath: /etc/trino/access-control
+  
+
 
 worker:
+  secretMounts:
+    - name: trino-certs
+      secretName: trino-certs
+      path: /opt/trino/cert.pem
+      subPath: cert.pem
+
   extraVolumes:
     - name: access-control
       configMap:
@@ -17,6 +54,8 @@ worker:
   extraVolumeMounts:
     - name: access-control
       mountPath: /etc/trino/access-control
+   
+
 
 accessControl:
   type: configmap
@@ -78,8 +117,6 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
 
-    
-   
   hosts:
     - host: trino.k8c.ru
       paths:
