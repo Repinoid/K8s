@@ -1,25 +1,25 @@
 # vals.yaml
 
 server:
-  # workers: 1
-  # node:
-  #   environment: production
-  #   dataDir: /data/trino
-  #   pluginDir: /usr/lib/trino/plugin
+  workers: 1
+  node:
+    environment: production
+    dataDir: /data/trino
+    pluginDir: /usr/lib/trino/plugin
   log:
     trino:
-      level: DEBUG
+      level: INFO
   config:
-    # path: /etc/trino
+    path: /etc/trino
     https:
       enabled: true   # Включаем HTTPS
       port: 8443     # Используем стандартный порт для HTTPS
       keystore:
         path: "/opt/trino/combined.pem"  # Путь к сертификату в формате PEM
-  #   authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
-  #   query:
-  #     maxMemory: "4GB"
-  # exchangeManager: {}
+    authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
+    query:
+      maxMemory: "4GB"
+  exchangeManager: {}
 
 
 coordinator:
@@ -41,9 +41,9 @@ coordinator:
 worker:
   secretMounts:
     - name: trino-tls
-      secretName: trino-secret
-      path: /opt/trino/trino_cert.pem
-      subPath: trino_cert.pem
+      secretName: trino-cert
+      path: /opt/trino/combined.pem
+      subPath: combined.pem
 
   extraVolumes:
     - name: access-control
@@ -109,14 +109,14 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    # nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
 
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"  # ← Важно!
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
   hosts:
     - host: trino.k8c.ru
@@ -127,7 +127,7 @@ ingress:
             service:
               name: trino
               port:
-                number: 8080
+                number: 8443
   tls:
     - secretName: trino-secret
       hosts:
