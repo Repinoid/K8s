@@ -5,6 +5,6 @@ trino.default.svc.cluster.local
 
 PO=$(kubectl get pods | grep 'trino-coordinator' | awk '{print $1}') && ke "$PO" -- trino
 
-kubectl create secret generic trino-certs --from-file=cert.pem
+kubectl create secret generic trino-cert --from-file=combined.pem
 
-uI3PwzmwWZioj0GD77PQQJg7ybxkrRAoS4e08fBq
+kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key
