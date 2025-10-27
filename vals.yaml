@@ -68,7 +68,6 @@ accessControl:
         ]
       }
 
-
 ingress:
   enabled: true
   className: nginx
@@ -76,7 +75,11 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    # Без заголовков X-Forwarded-*
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+
+    
+   
   hosts:
     - host: trino.k8c.ru
       paths:
@@ -93,7 +96,5 @@ ingress:
         - trino.k8c.ru
 
 additionalConfigProperties:
-  - http-server.process-forwarded=true          
-
-# config:
-#   http-server.process-forwarded: false  # Отключаем проверку forwarded headers
+  - http-server.process-forwarded=true
+  # - http-server.https.enabled=true

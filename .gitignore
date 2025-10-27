@@ -8,5 +8,7 @@ secrets.yaml
 securitate.yaml
 s3s.yaml
 
+*.pem
+
 # Используем jq для извлечения и декодирования
 # cat kubernetesAdminConfigB64.json | jq -r '.kubernetesAdminConfigB64' | base64 -d > ~/.kube/config
