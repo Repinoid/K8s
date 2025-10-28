@@ -15,7 +15,7 @@ server:
       enabled: true   # Включаем HTTPS
       port: 8443     # Используем стандартный порт для HTTPS
       keystore:
-        path: "/opt/trino/combined.pem"  # Путь к сертификату в формате PEM
+        path: "/opt/trino/trinoid.pem"  
     authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
     query:
       maxMemory: "4GB"
@@ -25,9 +25,9 @@ server:
 coordinator:
   secretMounts:
     - name: trino-tls
-      secretName: trino-cert0
-      path: /opt/trino/combined.pem
-      subPath: combined.pem
+      secretName: trinoid-secret
+      path: /opt/trino/trinoid.pem
+      subPath: trinoid.pem
 
   extraVolumes:
     - name: access-control
@@ -41,9 +41,9 @@ coordinator:
 worker:
   secretMounts:
     - name: trino-tls
-      secretName: trino-cert0
-      path: /opt/trino/combined.pem
-      subPath: combined.pem
+      secretName: trinoid-secret
+      path: /opt/trino/trinoid.pem
+      subPath: trinoid.pem
 
   extraVolumes:
     - name: access-control
@@ -119,7 +119,7 @@ ingress:
     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
   hosts:
-    - host: trino.k8c.ru
+    - host: trinoid.k8c.ru
       paths:
         - path: /
           pathType: Prefix
@@ -129,9 +129,9 @@ ingress:
               port:
                 number: 8443
   tls:
-    - secretName: trino-secret
+    - secretName: trinoid-secret
       hosts:
-        - trino.k8c.ru
+        - trinoid.k8c.ru
 
 additionalConfigProperties:
   - http-server.process-forwarded=true

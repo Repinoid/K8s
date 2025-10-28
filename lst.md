@@ -7,9 +7,9 @@ PO=$(kubectl get pods | grep 'trino-coordinator' | awk '{print $1}') && ke "$PO"
 
 
 openssl x509 -in combined.pem -noout -text
-kubectl create secret generic trino-cert --from-file=combined.pem
+kubectl create secret generic trinoid-secret --from-file=trinoid.pem
 
-kubectl create secret tls tls-secret --cert=tls.crt --key=tls.key
+kubectl create secret tls trinoid-secret --cert=t.crt --key=t.key
 
 kubectl get secret pgadmin-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode > pgadmin-cert.pem
 kubectl get secret pgadmin-tls-secret -o jsonpath="{.data['tls\.key']}" | base64 --decode > pgadmin-key.pem
