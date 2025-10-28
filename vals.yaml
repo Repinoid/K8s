@@ -25,7 +25,7 @@ server:
 coordinator:
   secretMounts:
     - name: trino-tls
-      secretName: trino-cert
+      secretName: trino-cert0
       path: /opt/trino/combined.pem
       subPath: combined.pem
 
@@ -41,7 +41,7 @@ coordinator:
 worker:
   secretMounts:
     - name: trino-tls
-      secretName: trino-cert
+      secretName: trino-cert0
       path: /opt/trino/combined.pem
       subPath: combined.pem
 
@@ -89,7 +89,7 @@ accessControl:
         ],
         "schemas": [
           {
-            "user": "admin",
+            "user": "trino",
             "schema": ".*",
             "owner": true
           },
