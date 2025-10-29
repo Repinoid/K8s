@@ -1,33 +1,46 @@
+{{- if .Values.deployKeycloak }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}-keycloak
+  name: {{ include "my-keycloak-chart.fullname" . }}
   labels:
-    {{- include "keycloak.labels" . | nindent 4 }}
-    app.kubernetes.io/component: keycloak
+    app: keycloak
 spec:
-  serviceName: {{ .Release.Name }}-keycloak-discovery
-  replicas: {{ .Values.keycloak.replicas }}
+  serviceName: "{{ include "my-keycloak-chart.fullname" . }}-discovery"
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "keycloak.selectorLabels" . | nindent 6 }}
+      app: keycloak
   template:
     metadata:
       labels:
-        {{- include "keycloak.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: keycloak
+        app: keycloak
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:{{ .Values.postgres.image.tag }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until pg_isready -h postgres -p 5432 -U keycloak; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+          env:
+            - name: PGPASSWORD
+              value: "{{ .Values.postgres.dbPassword }}"
       containers:
         - name: keycloak
-          image: "{{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           args: ["start"]
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: {{ .Values.keycloak.admin.username | quote }}
+              value: admin
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: {{ .Values.keycloak.admin.password | quote }}
+              value: admin
             - name: KC_PROXY_HEADERS
-              value: {{ .Values.keycloak.proxy.headers | quote }}
+              value: xforwarded
             - name: KC_HTTP_ENABLED
               value: "true"
             - name: KC_HOSTNAME_STRICT
@@ -41,17 +54,19 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
-              value: $(POD_IP)
+              value: "$(POD_IP)"
             - name: KC_DB_URL_DATABASE
-              value: {{ .Values.keycloak.database.name | quote }}
+              value: '{{ .Values.postgres.dbName }}'
             - name: KC_DB_URL_HOST
-              value: {{ .Values.keycloak.database.host | quote }}
+              value: '{{ .Values.postgres.dbHost }}'
             - name: KC_DB
               value: postgres
             - name: KC_DB_PASSWORD
-              value: {{ .Values.keycloak.database.password | quote }}
+              value: '{{ .Values.postgres.dbPassword }}'
             - name: KC_DB_USERNAME
-              value: {{ .Values.keycloak.database.username | quote }}
+              value: '{{ .Values.postgres.dbUser }}'
+            - name: KC_DB_URL_PORT
+              value: '{{ .Values.postgres.dbPort }}'
           ports:
             - name: http
               containerPort: 8080
@@ -63,8 +78,8 @@ spec:
             httpGet:
               path: /health/started
               port: 9000
-            periodSeconds: 1
-            failureThreshold: 600
+            periodSeconds: 5
+            failureThreshold: 60
           readinessProbe:
             httpGet:
               path: /health/ready
@@ -78,5 +93,10 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
           resources:
-            {{- toYaml .Values.keycloak.resources | nindent 12 }}
-            
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+{{- end }}

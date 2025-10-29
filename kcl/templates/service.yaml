@@ -1,0 +1,17 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "my-keycloak-chart.fullname" . }}
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: http
+      name: http
+  selector:
+    app: keycloak
+  type: {{ .Values.service.type }}
+{{- end }}

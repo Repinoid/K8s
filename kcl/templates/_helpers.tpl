@@ -1,18 +1,15 @@
 {{/*
-Common labels
+Create a default fully qualified app name
 */}}
-{{- define "keycloak.labels" -}}
-helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-app.kubernetes.io/name: {{ .Chart.Name }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
+{{- define "my-keycloak-chart.fullname" }}
+{{- if .Values.nameOverride }}
+{{- .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
 
-{{/*
-Selector labels
-*/}}
-{{- define "keycloak.selectorLabels" -}}
-app.kubernetes.io/name: keycloak
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end -}}
+{{/* Create chart name and version as used by the chart label */}}
+{{- define "my-keycloak-chart.chart" }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}

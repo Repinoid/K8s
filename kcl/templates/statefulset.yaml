@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "my-keycloak-chart.fullname" . }}-discovery
+  labels:
+    app: keycloak
+spec:
+  selector:
+    app: keycloak
+  clusterIP: None
+  type: ClusterIP
+  
