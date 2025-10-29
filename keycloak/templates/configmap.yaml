@@ -1,21 +1,33 @@
-{{- /*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
-*/}}
-
-{{- if and .Values.configuration (not .Values.existingConfigmap) }}
+{{- if .Values.cache.configFile }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ printf "%s-configuration" (include "common.names.fullname" .) }}
-  namespace: {{ include "common.names.namespace" . | quote }}
-  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
-    app.kubernetes.io/component: keycloak
-    app.kubernetes.io/part-of: keycloak
-  {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  name: {{ include "keycloak.fullname" . }}-cache
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+  {{- with (include "keycloak.annotations" .) }}
+  annotations:
+    {{- . | nindent 4 }}
   {{- end }}
 data:
-  keycloak.conf: |-
-    {{- .Values.configuration | nindent 4 }}
+  cache-ispn.xml: |
+    {{- .Values.cache.configFile | nindent 4 }}
+{{- end }}
+{{- if .Values.realm.configFile }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "keycloak.fullname" . }}-realm
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+  {{- with (include "keycloak.annotations" .) }}
+  annotations:
+    {{- . | nindent 4 }}
+  {{- end }}
+data:
+  realm.json: |
+    {{ .Values.realm.configFile | nindent 4 }}
 {{- end }}

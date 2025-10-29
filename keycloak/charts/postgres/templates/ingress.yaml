@@ -1,16 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "keycloak.fullname" . -}}
-{{- $httpPort := .Values.service.httpPort -}}
-{{- if and .Values.ingress.className (not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class")) }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
-{{- end }}
+{{- $fullName := include "postgres.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "keycloak.labels" . | nindent 4 }}
+    {{- include "postgres.labels" . | nindent 4 }}
   {{- $annotations := merge .Values.ingress.annotations .Values.commonAnnotations }}
   {{- with $annotations }}
   annotations:
@@ -45,10 +42,10 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $httpPort }}
+                  number: {{ $svcPort }}
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: {{ $httpPort }}
+              servicePort: {{ $svcPort }}
               {{- end }}
           {{- end }}
     {{- end }}
