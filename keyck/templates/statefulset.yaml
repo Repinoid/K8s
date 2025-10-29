@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "keycloak.fullname" . }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "keycloak.fullname" . }}-discovery
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "keycloak.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "keycloak.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: keycloak
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["start"]
+          env:
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "{{ .Values.keycloak.adminUser }}"
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: "{{ .Values.keycloak.adminPassword }}"
+            - name: KC_PROXY_HEADERS
+              value: "{{ .Values.keycloak.proxyHeaders }}"
+            - name: KC_HTTP_ENABLED
+              value: "{{ .Values.keycloak.httpEnabled }}"
+            - name: KC_HOSTNAME_STRICT
+              value: "{{ .Values.keycloak.hostnameStrict }}"
+            - name: KC_HEALTH_ENABLED
+              value: "{{ .Values.keycloak.healthEnabled }}"
+            - name: KC_CACHE
+              value: "{{ .Values.keycloak.cache }}"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
+              value: '$(POD_IP)'
+            - name: KC_DB_URL_DATABASE
+              value: '{{ .Values.postgresql.database }}'
+            - name: KC_DB_URL_HOST
+              value: '{{ include "keycloak.fullname" . }}-postgres'
+            - name: KC_DB
+              value: 'postgres'
+            - name: KC_DB_PASSWORD
+              value: '{{ .Values.postgresql.password }}'
+            - name: KC_DB_USERNAME
+              value: '{{ .Values.postgresql.username }}'
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: jgroups
+              containerPort: 7800
+            - name: jgroups-fd
+              containerPort: 57800
+          startupProbe:
+            httpGet:
+              path: {{ .Values.keycloak.probes.startup.path }}
+              port: {{ .Values.keycloak.probes.startup.port }}
+            periodSeconds: {{ .Values.keycloak.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.keycloak.probes.startup.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.keycloak.probes.readiness.path }}
+              port: {{ .Values.keycloak.probes.readiness.port }}
+            periodSeconds: {{ .Values.keycloak.probes.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.keycloak.probes.readiness.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.keycloak.probes.liveness.path }}
+              port: {{ .Values.keycloak.probes.liveness.port }}
+            periodSeconds: {{ .Values.keycloak.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.keycloak.probes.liveness.failureThreshold }}
+          resources:
+            {{- toYaml .Values.keycloak.resources | nindent 12 }}
+            
