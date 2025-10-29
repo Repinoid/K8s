@@ -1,102 +1,53 @@
-{{- if .Values.deployKeycloak }}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ include "my-keycloak-chart.fullname" . }}
+  name: postgres
   labels:
-    app: keycloak
+    app: postgres
 spec:
-  serviceName: "{{ include "my-keycloak-chart.fullname" . }}-discovery"
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
-      app: keycloak
+      app: postgres
   template:
     metadata:
       labels:
-        app: keycloak
+        app: postgres
     spec:
-      initContainers:
-        - name: wait-for-postgres
-          image: postgres:{{ .Values.postgres.image.tag }}
-          command:
-            - /bin/sh
-            - -c
-            - |
-              until pg_isready -h postgres -p 5432 -U keycloak; do
-                echo "Waiting for PostgreSQL to be ready..."
-                sleep 2
-              done
-          env:
-            - name: PGPASSWORD
-              value: "{{ .Values.postgres.dbPassword }}"
       containers:
-        - name: keycloak
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          args: ["start"]
+        - name: postgres
+          image: postgres:15
           env:
-            - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: admin
-            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: admin
-            - name: KC_PROXY_HEADERS
-              value: xforwarded
-            - name: KC_HTTP_ENABLED
-              value: "true"
-            - name: KC_HOSTNAME_STRICT
-              value: "false"
-            - name: KC_HEALTH_ENABLED
-              value: "true"
-            - name: KC_CACHE
-              value: ispn
-            - name: POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
-              value: "$(POD_IP)"
-            - name: KC_DB_URL_DATABASE
-              value: '{{ .Values.postgres.dbName }}'
-            - name: KC_DB_URL_HOST
-              value: '{{ .Values.postgres.dbHost }}'
-            - name: KC_DB
-              value: postgres
-            - name: KC_DB_PASSWORD
-              value: '{{ .Values.postgres.dbPassword }}'
-            - name: KC_DB_USERNAME
-              value: '{{ .Values.postgres.dbUser }}'
-            - name: KC_DB_URL_PORT
-              value: '{{ .Values.postgres.dbPort }}'
+            - name: POSTGRES_USER
+              value: "keycloak"
+            - name: POSTGRES_PASSWORD
+              value: "keycloak"
+            - name: POSTGRES_DB
+              value: "keycloak"
+            - name: POSTGRES_INITDB_ARGS
+              value: "--auth-host=scram-sha-256"
           ports:
-            - name: http
-              containerPort: 8080
-            - name: jgroups
-              containerPort: 7800
-            - name: jgroups-fd
-              containerPort: 57800
-          startupProbe:
-            httpGet:
-              path: /health/started
-              port: 9000
-            periodSeconds: 5
-            failureThreshold: 60
-          readinessProbe:
-            httpGet:
-              path: /health/ready
-              port: 9000
-            periodSeconds: 10
-            failureThreshold: 3
+            - name: postgres
+              containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
           livenessProbe:
-            httpGet:
-              path: /health/live
-              port: 9000
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - keycloak
+            initialDelaySeconds: 30
             periodSeconds: 10
-            failureThreshold: 3
-          resources:
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
-{{- end }}
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - keycloak
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-data
+          emptyDir: {}
