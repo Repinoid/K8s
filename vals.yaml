@@ -8,7 +8,7 @@ server:
     pluginDir: /usr/lib/trino/plugin
   log:
     trino:
-      level: INFO
+      level: DEBUG
   config:
     path: /etc/trino
     https:
@@ -53,8 +53,6 @@ worker:
     - name: access-control
       mountPath: /etc/trino/access-control
    
-
-
 accessControl:
   type: configmap
   refreshPeriod: 60s
@@ -69,41 +67,68 @@ accessControl:
             "allow": "all"
           },
           {
-            "group": "finance|human_resources",
-            "catalog": "postgres",
-            "allow": true
-          },
-          {
-            "catalog": "hive",
+            "user": "trinod", 
+            "catalog": ".*",
             "allow": "all"
           },
           {
-            "user": "yandex",
-            "catalog": "tpch",
-            "allow": "read-only"
+            "catalog": "system",
+            "allow": "all"
           },
           {
-            "catalog": "system",
-            "allow": "none"
+            "catalog": "tpch",
+            "allow": "all"
+          },
+          {
+            "catalog": "tpcds",
+            "allow": "all"
           }
         ],
         "schemas": [
           {
             "user": "trino",
+            "catalog": ".*",
             "schema": ".*",
             "owner": true
           },
           {
-            "user": "guest",
-            "owner": false
+            "user": "trinod",
+            "catalog": ".*", 
+            "schema": ".*",
+            "owner": true
           },
           {
-            "catalog": "default",
-            "schema": "default",
+            "catalog": "system",
+            "schema": ".*",
             "owner": true
+          },
+          {
+            "catalog": "tpch",
+            "schema": ".*",
+            "owner": true
+          },
+          {
+            "catalog": "tpcds", 
+            "schema": ".*",
+            "owner": true
+          }
+        ],
+        "tables": [
+          {
+            "catalog": "system",
+            "schema": "jdbc",
+            "table": ".*",
+            "privileges": ["SELECT"]
+          },
+          {
+            "catalog": "system", 
+            "schema": "information_schema",
+            "table": ".*",
+            "privileges": ["SELECT"]
           }
         ]
       }
+
 
 ingress:
   enabled: true
