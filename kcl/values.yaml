@@ -1,0 +1,49 @@
+keycloak:
+  image:
+    repository: quay.io/keycloak/keycloak
+    tag: 26.4.2
+    
+  host: keycloak.k8c.ru
+  
+  admin:
+    username: admin
+    password: admin
+    
+  replicas: 1
+  
+  database:
+    host: postgres
+    name: keycloak
+    username: keycloak
+    password: keycloak
+    
+  proxy:
+    headers: xforwarded
+    
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2000Mi
+    requests:
+      cpu: 500m
+      memory: 1700Mi
+  
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    tls:
+      secretName: keycloak-tls-secret
+
+postgres:
+  enabled: true
+  image:
+    repository: mirror.gcr.io/postgres
+    tag: "17"
+  database: keycloak
+  username: keycloak
+  password: keycloak
+  logStatement: "all"

@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "keycloak.fullname" . }}-discovery
+  name: {{ .Release.Name }}-keycloak-discovery
   labels:
     {{- include "keycloak.labels" . | nindent 4 }}
+    app.kubernetes.io/component: keycloak
 spec:
   selector:
     {{- include "keycloak.selectorLabels" . | nindent 4 }}
   clusterIP: None
-  type: {{ .Values.keycloak.discoveryService.type }}
+  type: ClusterIP
   
