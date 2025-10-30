@@ -63,9 +63,9 @@ spec:
           args: ["start"]
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: "admin"
+              value: "{{ .Values.postgres.KC_BOOTSTRAP_ADMIN_USERNAME }}"
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: "admin"
+              value: "{{ .Values.postgres.KC_BOOTSTRAP_ADMIN_PASSWORD }}"
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
             - name: KC_HTTP_ENABLED

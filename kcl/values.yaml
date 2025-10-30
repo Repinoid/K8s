@@ -1,14 +1,3 @@
-# # Default values for my-keycloak-chart.
-# replicaCount: 1
-
-# image:
-#   repository: quay.io/keycloak/keycloak
-#   tag: 26.4.2
-#   pullPolicy: IfNotPresent
-
-# service:
-#   type: ClusterIP
-#   port: 8080
 
 postgres:
   enabled: true
@@ -21,14 +10,8 @@ postgres:
   dbName: keycloak
   dbHost: postgres
   dbPort: 5432
-
-# resources:
-#   limits:
-#     cpu: 2000m
-#     memory: 2000Mi
-#   requests:
-#     cpu: 500m
-#     memory: 1700Mi
+  KC_BOOTSTRAP_ADMIN_USERNAME: admin
+  KC_BOOTSTRAP_ADMIN_PASSWORD: admin
 
 
 
