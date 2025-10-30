@@ -83,15 +83,15 @@ spec:
             - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
               value: '$(POD_IP)'
             - name: KC_DB_URL_DATABASE
-              value: '{{ .Values.postgres.dbName }}'
+              value: 'keycloak'
             - name: KC_DB_URL_HOST
               value: 'postgres'
             - name: KC_DB
               value: 'postgres'
             - name: KC_DB_PASSWORD
-              value: '{{ .Values.postgres.dbPassword }}'
+              value: 'keycloak'
             - name: KC_DB_USERNAME
-              value: '{{ .Values.postgres.dbUser }}'
+              value: 'keycloak'
             - name: KC_DB_URL_PORT
               value: '5432'
           ports:
