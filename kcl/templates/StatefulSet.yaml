@@ -8,7 +8,7 @@ metadata:
     app: keycloak
 spec:
   serviceName: keycloak-discovery
-  replicas: 1
+  replicas: {{ .Values.keycloak.replicas }}
   selector:
     matchLabels:
       app: keycloak

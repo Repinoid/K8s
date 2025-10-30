@@ -1,4 +1,5 @@
 keycloak:
+  replicas: 1
   service:
     name: keycloak-service
 
