@@ -21,7 +21,7 @@ metadata:
   labels:
     app: postgres
 spec:
-  replicas: 1
+  replicas: {{ .Values.postgres.replicas }}
   selector:
     matchLabels:
       app: postgres
@@ -48,6 +48,7 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata  # Добавьте эту строку
           livenessProbe:
             exec:
               command:
@@ -66,4 +67,19 @@ spec:
             periodSeconds: 5
       volumes:
         - name: postgres-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: {{ .Values.postgres.claimName }}
+
+---
+# Добавляем PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.claimName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storageSize }}
+      # storage: 1Gi # Размер хранилища, можете изменить по своему усмотрению
