@@ -10,17 +10,17 @@
 #   type: ClusterIP
 #   port: 8080
 
-# postgres:
-#   enabled: true
-#   image:
-#     repository: postgres
-#     tag: 15
-#     pullPolicy: IfNotPresent
-#   dbUser: keycloak
-#   dbPassword: keycloak
-#   dbName: keycloak
-#   dbHost: postgres
-#   dbPort: 5432
+postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: 15
+    pullPolicy: IfNotPresent
+  dbUser: keycloak
+  dbPassword: keycloak
+  dbName: keycloak
+  dbHost: postgres
+  dbPort: 5432
 
 # resources:
 #   limits:
@@ -29,6 +29,10 @@
 #   requests:
 #     cpu: 500m
 #     memory: 1700Mi
+
+
+
+
 
 ingress:
   enabled: 

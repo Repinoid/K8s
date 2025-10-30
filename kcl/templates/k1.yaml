@@ -148,11 +148,11 @@ spec:
           image: postgres:15
           env:
             - name: POSTGRES_USER
-              value: "keycloak"
+              value: "{{ .Values.postgres.dbUser }}"
             - name: POSTGRES_PASSWORD
-              value: "keycloak"
+              value: "{{ .Values.postgres.dbPassword }}"
             - name: POSTGRES_DB
-              value: "keycloak"
+              value: "{{ .Values.postgres.dbName }}"
             - name: POSTGRES_INITDB_ARGS
               value: "--auth-host=scram-sha-256"
           ports:
@@ -166,7 +166,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - keycloak
+                - {{ .Values.postgres.dbUser }}
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
@@ -174,7 +174,7 @@ spec:
               command:
                 - pg_isready
                 - -U
-                - keycloak
+                - {{ .Values.postgres.dbUser }}
             initialDelaySeconds: 5
             periodSeconds: 5
       volumes:
