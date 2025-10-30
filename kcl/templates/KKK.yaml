@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: keycloak-service
+  name: {{ .Values.keycloak.service.name }}
   labels:
     app: keycloak
 spec:
@@ -50,7 +50,7 @@ spec:
             - /bin/sh
             - -c
             - |
-              until pg_isready -h postgres -p 5432 -U {{ .Values.postgres.dbUser }}; do
+              until pg_isready -h {{ .Values.postgres.serviceName }} -p 5432 -U {{ .Values.postgres.dbUser }}; do
                 echo "Waiting for PostgreSQL to be ready..."
                 sleep 2
               done
@@ -85,12 +85,11 @@ spec:
             - name: KC_DB_URL_DATABASE
               value: '{{ .Values.postgres.dbName }}'
             - name: KC_DB_URL_HOST
-              value: 'postgres'
-            - name: KC_DB
+              value: '{{ .Values.postgres.serviceName }}'
+            - name: KC_DB       # тип базы данных (database vendor).
               value: 'postgres'
             - name: KC_DB_PASSWORD
               value: '{{ .Values.postgres.dbPassword }}'
-              # value: 'keycloak'
             - name: KC_DB_USERNAME
               value: '{{ .Values.postgres.dbUser }}'
             - name: KC_DB_URL_PORT
@@ -127,98 +126,3 @@ spec:
             requests:
               cpu: 500m
               memory: 1700Mi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: postgres
-  labels:
-    app: postgres
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:15
-          env:
-            - name: POSTGRES_USER
-              value: "{{ .Values.postgres.dbUser }}"
-            - name: POSTGRES_PASSWORD
-              value: "{{ .Values.postgres.dbPassword }}"
-            - name: POSTGRES_DB
-              value: "{{ .Values.postgres.dbName }}"
-            - name: POSTGRES_INITDB_ARGS
-              value: "--auth-host=scram-sha-256"
-          ports:
-            - name: postgres
-              containerPort: 5432
-          volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
-          livenessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -U
-                - {{ .Values.postgres.dbUser }}
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            exec:
-              command:
-                - pg_isready
-                - -U
-                - {{ .Values.postgres.dbUser }}
-            initialDelaySeconds: 5
-            periodSeconds: 5
-      volumes:
-        - name: postgres-data
-          emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: postgres
-  name: postgres
-spec:
-  selector:
-    app: postgres
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
-  type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ .Values.ingress.name }}
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - {{ .Values.ingress.host }}
-    secretName: keycloak-tls-secret
-  rules:
-  - host: {{ .Values.ingress.host }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix 
-        backend:
-          service:
-            name: keycloak-service
-            port:
-              number: 8080

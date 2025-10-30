@@ -1,6 +1,11 @@
+keycloak:
+  service:
+    name: keycloak-service
+
 
 postgres:
   enabled: true
+  serviceName: postgres-service
   image:
     repository: postgres
     tag: 15
@@ -12,10 +17,6 @@ postgres:
   dbPort: 5432
   KC_BOOTSTRAP_ADMIN_USERNAME: admin
   KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-
-
-
-
 
 ingress:
   enabled: 
