@@ -30,20 +30,9 @@
 #     cpu: 500m
 #     memory: 1700Mi
 
-# ingress:
-#   enabled: true
-#   className: nginx
-#   annotations:
-#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-#     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-#     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-#   hosts:
-#     - host: keycloak.k8c.ru
-#       paths:
-#         - path: "/"
-#           pathType: Prefix
-#   tls:
-#     - secretName: keycloak-tls-secret
-#       hosts:
-#         - keycloak.k8c.ru
+ingress:
+  enabled: 
+  name: keycloak-ingress
+  host: keycloak.k8c.ru
+  secretName: keycloak-tls-secret
 
