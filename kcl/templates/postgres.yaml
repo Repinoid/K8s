@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15
+          image: {{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}
           env:
             - name: POSTGRES_USER
               value: "{{ .Values.postgres.dbUser }}"
@@ -70,16 +70,3 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.postgres.claimName }}
 
----
-# Добавляем PersistentVolumeClaim
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.postgres.claimName }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.postgres.storageSize }}
-      # storage: 1Gi # Размер хранилища, можете изменить по своему усмотрению

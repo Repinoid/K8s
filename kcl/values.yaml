@@ -8,11 +8,10 @@ postgres:
   enabled: true
   replicas: 1
   serviceName: postgres-service
-  storageSize: 300Mi
-  # image:
-  #   repository: postgres
-  #   tag: 15
-  #   pullPolicy: IfNotPresent
+  image:
+    repository: postgres
+    tag: 15
+    pullPolicy: IfNotPresent
   dbUser: keycloak
   dbPassword: keycloak
   dbName: keycloak
@@ -20,7 +19,7 @@ postgres:
   dbPort: 5432
   KC_BOOTSTRAP_ADMIN_USERNAME: admin
   KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-  claimName: kkk-postgres-pvc
+  claimName: k-postgres-pvc           # the same as in kcl/PersistentVolumeClaim.yaml
 
 
 ingress:
