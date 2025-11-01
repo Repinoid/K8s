@@ -26,8 +26,8 @@ additionalConfigProperties:
   - http-server.authentication.type=oauth2
   - http-server.https.port=8443
   - http-server.https.enabled=true
-  - http-server.authentication.oauth2.issuer=https://keycloak.k8c.ru
-  - http-server.authentication.oauth2.client-id=trinoid
+  - http-server.authentication.oauth2.issuer=https://keycloak.k8c.ru/realms/trin
+  - http-server.authentication.oauth2.client-id=trinner
   - http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD  
   - internal-communication.shared-secret=trino-prod-internal-$(date +%s)
   - http-server.process-forwarded=true
