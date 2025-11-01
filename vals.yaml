@@ -147,7 +147,8 @@ accessControl:
           }
         ]
       }
-
+additionalConfigProperties:
+  - http-server.process-forwarded=true
 
 # Ingress принимает HTTPS трафик на порту 443 с валидным сертификатом от Let's Encrypt
 
