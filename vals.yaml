@@ -1,5 +1,39 @@
 # vals.yaml
 
+# server:
+#   workers: 1
+#   node:
+#     environment: production
+#     dataDir: /data/trino
+#     pluginDir: /usr/lib/trino/plugin
+#   log:
+#     trino:
+#       level: DEBUG
+#   config:
+#     path: /etc/trino
+#     additionalConfigFiles:
+#       config.properties: |
+#         coordinator=true
+#         node-scheduler.include-coordinator=false
+#         discovery.uri=https://trinoid.k8c.ru:8443
+#         http-server.http.port=8080
+#         http-server.authentication.type=oauth2
+#         http-server.authentication.oauth2.provider-url=https://keycloak.k8c.ru/auth/realms/trin
+#         http-server.authentication.oauth2.client-id=trino
+#         http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD
+#         http-server.authentication.oauth2.redirect-url=/ui/oauth2/callback
+#         http-server.authentication.oauth2.scopes=openid
+#         web-ui.enabled=true
+#     https:
+#       enabled: true   # Включаем HTTPS
+#       port: 8443     # Используем стандартный порт для HTTPS
+#       keystore:
+#         path: "/opt/trino/trinoid.pem"  
+#     authenticationType: "oauth2"           # Оставляем пустое значение, если аутентификация не настроена
+#     query:
+#       maxMemory: "4GB"
+#   exchangeManager: {}
+
 server:
   workers: 1
   node:
@@ -11,28 +45,23 @@ server:
       level: DEBUG
   config:
     path: /etc/trino
-    # additionalConfigFiles:
-    #   config.properties: |
-    #     coordinator=true
-    #     node-scheduler.include-coordinator=false
-    #     discovery.uri=https://trino.k8c.ru:8443
-    #     http-server.http.port=8080
-    #     http-server.authentication.type=oauth2
-    #     http-server.authentication.oauth2.provider-url=https://keycloak.k8c.ru/auth/realms/trin
-    #     http-server.authentication.oauth2.client-id=trino
-    #     http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD
-    #     http-server.authentication.oauth2.redirect-url=/ui/oauth2/callback
-    #     http-server.authentication.oauth2.scopes=openid
-    #     web-ui.enabled=true
-    https:
-      enabled: true   # Включаем HTTPS
-      port: 8443     # Используем стандартный порт для HTTPS
-      keystore:
-        path: "/opt/trino/trinoid.pem"  
-    authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
-    query:
-      maxMemory: "4GB"
+    coordinator: true
+    node-scheduler.include-coordinator: false
+    http-server.http.port: 8080
+    http-server.https.enabled: true
+    http-server.https.port: 8443
+    http-server.https.keystore.path: "/opt/trino/trinoid.pem"
+    http-server.authentication.type: oauth2
+    http-server.authentication.oauth2.issuer: "https://keycloak.k8c.ru/auth/realms/trin"
+    http-server.authentication.oauth2.client-id: "trino"
+    http-server.authentication.oauth2.client-secret: "TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD"
+    http-server.authentication.oauth2.redirect-url: "/ui/oauth2/callback"
+    http-server.authentication.oauth2.scopes: "openid"
+    discovery.uri: "https://trinoid.k8c.ru:8443"
+    web-ui.enabled: true
+    query.max-memory: "4GB"
   exchangeManager: {}
+
 
 
 coordinator:
