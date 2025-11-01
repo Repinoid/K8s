@@ -13,3 +13,5 @@ kubectl create secret tls trinoid-secret --cert=t.crt --key=t.key
 
 kubectl get secret pgadmin-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode > pgadmin-cert.pem
 kubectl get secret pgadmin-tls-secret -o jsonpath="{.data['tls\.key']}" | base64 --decode > pgadmin-key.pem
+
+helm install tr trino/trino -f vals.yaml --set server.workers=1
