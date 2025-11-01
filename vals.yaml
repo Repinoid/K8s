@@ -11,39 +11,26 @@ server:
       level: DEBUG
   config:
     path: /etc/trino
-    additionalConfigFiles:
-      config.properties: |
-        http-server.authentication.type=oauth2
-
-        http-server.https.port=8443
-        http-server.https.enabled=true
-
-        http-server.authentication.oauth2.issuer=https://keycloak.k8c.ru
-        http-server.authentication.oauth2.client-id=trinoid
-        http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD
-
-      
-        # http-server.authentication.type=oauth2
-        # discovery.uri=https://trinoid.k8c.ru:8443
-
-        # coordinator=true
-        # node-scheduler.include-coordinator=false
-        # http-server.http.port=8080
-        # http-server.authentication.oauth2.provider-url=https://keycloak.k8c.ru/auth/realms/trin
-        # http-server.authentication.oauth2.client-id=trino
-        # http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD
-        # http-server.authentication.oauth2.redirect-url=/ui/oauth2/callback
-        # http-server.authentication.oauth2.scopes=openid
-    #     web-ui.enabled=true
     https:
       enabled: true   # Включаем HTTPS
       port: 8443     # Используем стандартный порт для HTTPS
       keystore:
         path: "/opt/trino/trinoid.pem"  
-    authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
+    # authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
     query:
       maxMemory: "4GB"
   exchangeManager: {}
+
+additionalConfigProperties:
+  - http-server.process-forwarded=true
+  - http-server.authentication.type=oauth2
+  - http-server.https.port=8443
+  - http-server.https.enabled=true
+  - http-server.authentication.oauth2.issuer=https://keycloak.k8c.ru
+  - http-server.authentication.oauth2.client-id=trinoid
+  - http-server.authentication.oauth2.client-secret=TfphnwaykhpKdvgBSW6DAJfGmZk2EkTD  
+  - internal-communication.shared-secret=trino-prod-internal-$(date +%s)
+  - http-server.process-forwarded=true
 
 
 coordinator:
@@ -182,6 +169,6 @@ ingress:
       hosts:
         - trinoid.k8c.ru
 
-additionalConfigProperties:
-  - http-server.process-forwarded=true
-  # - http-server.https.enabled=true
+# additionalConfigProperties:
+  
+#   # - http-server.https.enabled=true
