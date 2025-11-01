@@ -8,15 +8,15 @@ server:
     pluginDir: /usr/lib/trino/plugin
   log:
     trino:
-      level: DEBUG
+      level: INFO
   config:
     path: /etc/trino
     https:
       enabled: true   # Включаем HTTPS
       port: 8443     # Используем стандартный порт для HTTPS
       keystore:
-        path: "/opt/trino/trinoid.pem"  
-    # authenticationType: ""           # Оставляем пустое значение, если аутентификация не настроена
+        path: "/etc/trino/certs/trinoid.pem"  # Измененный путь
+        # path: "/opt/trino/trinoid.pem"  
     query:
       maxMemory: "4GB"
   exchangeManager: {}
@@ -37,8 +37,9 @@ coordinator:
   secretMounts:
     - name: trino-tls
       secretName: trinoid-secret
-      path: /opt/trino/trinoid.pem
-      subPath: trinoid.pem
+      path: /etc/trino/certs  # Измененный путь
+      # path: /opt/trino/trinoid.pem
+      # subPath: trinoid.pem
 
   extraVolumes:
     - name: access-control
@@ -53,8 +54,9 @@ worker:
   secretMounts:
     - name: trino-tls
       secretName: trinoid-secret
-      path: /opt/trino/trinoid.pem
-      subPath: trinoid.pem
+      path: /etc/trino/certs  # Измененный путь
+      # path: /opt/trino/trinoid.pem
+      # subPath: trinoid.pem
 
   extraVolumes:
     - name: access-control
